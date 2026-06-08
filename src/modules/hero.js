@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { godRaysFrag, fullscreenVert } from '../shaders/godRays.frag.js';
 import { sampleTexas } from './texasShape.js';
+import { tryRenderer, hideCanvasWithFallback } from './webglGuard.js';
 
 const isMobile = window.matchMedia('(max-width: 880px)').matches;
 const PARTICLE_COUNT = isMobile ? 1400 : 2800;
@@ -10,12 +11,17 @@ export function initHero({ reducedMotion }) {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
 
-  const renderer = new THREE.WebGLRenderer({
+  const renderer = tryRenderer({
     canvas,
     antialias: !isMobile,
     alpha: false,
     powerPreference: 'high-performance'
   });
+  if (!renderer) {
+    hideCanvasWithFallback(canvas, 'radial-gradient(ellipse at 50% 60%, rgba(0,212,255,0.18), transparent 70%), #080c18');
+    document.querySelector('.hero__title')?.classList.add('scrolled');
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   const size = () => ({ w: canvas.clientWidth, h: canvas.clientHeight });
   let { w, h } = size();
@@ -220,41 +226,38 @@ export function initHero({ reducedMotion }) {
 
   // ===== ANIMATION STATE =====
   // morph 0 = origin, 1 = explode, 2 = texas, 3 = battery
-  const state = { morph: 0, particleOpacity: 1, batteryScale: 0, ringOpacity: 0 };
+  // Use a single shared ref so successive tweens animate from current value
+  const morphRef = { t: 0 };
 
-  const morphTo = (target, targets, duration) => {
-    return gsap.to({ t: state.morph }, {
-      t: target,
-      duration,
-      ease: 'power3.inOut',
-      onUpdate() {
-        const t = this.targets()[0].t;
-        // Determine which 2 targets to blend
-        let a, b, lerp;
-        if (t < 1) { a = origin; b = explode; lerp = t; }
-        else if (t < 2) { a = explode; b = texasTargets; lerp = t - 1; }
-        else { a = texasTargets; b = batteryTargets; lerp = t - 2; }
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-          const i3 = i * 3;
-          positions[i3] = a[i3] + (b[i3] - a[i3]) * lerp;
-          positions[i3 + 1] = a[i3 + 1] + (b[i3 + 1] - a[i3 + 1]) * lerp;
-          positions[i3 + 2] = a[i3 + 2] + (b[i3 + 2] - a[i3 + 2]) * lerp;
-        }
-        pGeo.attributes.position.needsUpdate = true;
-        state.morph = t;
-      }
-    });
+  const updateParticles = () => {
+    const t = morphRef.t;
+    let a, b, lerp;
+    if (t < 1)      { a = origin;        b = explode;        lerp = t; }
+    else if (t < 2) { a = explode;       b = texasTargets;   lerp = t - 1; }
+    else            { a = texasTargets;  b = batteryTargets; lerp = Math.min(1, t - 2); }
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const i3 = i * 3;
+      positions[i3]     = a[i3]     + (b[i3]     - a[i3])     * lerp;
+      positions[i3 + 1] = a[i3 + 1] + (b[i3 + 1] - a[i3 + 1]) * lerp;
+      positions[i3 + 2] = a[i3 + 2] + (b[i3 + 2] - a[i3 + 2]) * lerp;
+    }
+    pGeo.attributes.position.needsUpdate = true;
   };
+
+  const morphTo = (target, duration) => gsap.to(morphRef, {
+    t: target,
+    duration,
+    ease: 'power3.inOut',
+    onUpdate: updateParticles
+  });
 
   // Orchestrated awakening
   if (!reducedMotion) {
     const tl = gsap.timeline({ delay: 0.4 });
-    tl.add(() => {}, 0)
-      .to(state, { particleOpacity: 1, duration: 0.3 }, 0)
-      .add(morphTo(1, null, 0.7), 0.1)        // explode
-      .add(morphTo(2, null, 1.0), '+=0.1')    // form Texas
+    tl.add(morphTo(1, 0.7), 0.1)              // explode outward
+      .add(morphTo(2, 1.0), '+=0.1')          // form Texas
       .to({}, { duration: 0.9 })              // hold Texas
-      .add(morphTo(3, null, 1.2), '<')        // morph to battery cloud (overlaps)
+      .add(morphTo(3, 1.2), '<')              // morph to battery cloud (overlaps the hold)
       .to(pMat, { opacity: 0, duration: 0.8 }, '-=0.4')
       .to(batteryGroup.scale, { x: 1, y: 1, z: 1, duration: 1.2, ease: 'back.out(1.5)' }, '-=0.9')
       .to(ringGroup, {
@@ -315,6 +318,7 @@ export function initHero({ reducedMotion }) {
   // ===== RENDER LOOP =====
   const clock = new THREE.Clock();
   let smoothedX = 0, smoothedY = 0;
+  let baseYRot = 0;
   const render = () => {
     const t = clock.getElapsedTime();
     bgUniforms.uTime.value = t;
@@ -322,11 +326,11 @@ export function initHero({ reducedMotion }) {
     smoothedX += (target.x - smoothedX) * 0.06;
     smoothedY += (target.y - smoothedY) * 0.06;
 
-    // Battery rotation (0.3deg/frame at ~60fps → ~18deg/sec)
-    batteryGroup.rotation.y += 0.005;
-    // Parallax tilt toward cursor
+    // Battery base rotation accumulates at constant rate
+    baseYRot += 0.005;
+    // Parallax tilt is *set* on top, so it never drifts
+    batteryGroup.rotation.y = baseYRot + smoothedX * 0.18;
     batteryGroup.rotation.x = smoothedY * 0.35;
-    batteryGroup.rotation.y += smoothedX * 0.0008;
 
     // Indicator pulse
     indicator.material.emissiveIntensity = 0.7 + Math.sin(t * 2) * 0.4;

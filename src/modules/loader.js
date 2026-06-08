@@ -9,6 +9,8 @@ export function initLoader() {
     const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
     let assetsReady = false;
     fontsReady.then(() => { assetsReady = true; });
+    // Hard timeout: dismiss after 4s even if fonts never resolve
+    setTimeout(() => { assetsReady = true; }, 4000);
 
     const tick = () => {
       const elapsed = performance.now() - start;

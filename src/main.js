@@ -15,6 +15,8 @@ import { initRevealMasks } from './modules/reveal.js';
 import { initCounters } from './modules/counters.js';
 import { initAudio } from './modules/audio.js';
 import { initAccentBreathing } from './modules/accentBreathing.js';
+import { initModal } from './modules/modal.js';
+import { initNavMenu } from './modules/navMenu.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,6 +47,8 @@ initLoader().then(() => {
   initRevealMasks();
   initCounters();
   initAudio();
+  initModal();
+  initNavMenu();
 
   // HERO HEADLINE WEIGHT MORPH on scroll
   const heroTitle = document.querySelector('.hero__title');

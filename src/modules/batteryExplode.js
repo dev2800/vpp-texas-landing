@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { tryRenderer, hideCanvasWithFallback } from './webglGuard.js';
 
 const COMPONENTS = [
   { name: 'CASING',     benefit: 'Aircraft-grade aluminum. Dust- and rodent-sealed.',     axis: [0, 0, -2.2] },
@@ -16,12 +17,16 @@ export function initBatteryExplode({ reducedMotion }) {
   const section = document.querySelector('.section--battery');
   if (!canvas || !section) return;
 
-  const renderer = new THREE.WebGLRenderer({
+  const renderer = tryRenderer({
     canvas,
     antialias: true,
     alpha: true,
     powerPreference: 'high-performance'
   });
+  if (!renderer) {
+    hideCanvasWithFallback(canvas, 'radial-gradient(ellipse at center, rgba(0,212,255,0.12), transparent 70%)');
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   const scene = new THREE.Scene();

@@ -1,6 +1,7 @@
 // Final CTA background — the assembled grid, pulsing
 import * as THREE from 'three';
 import { fullscreenVert } from '../shaders/godRays.frag.js';
+import { tryRenderer, hideCanvasWithFallback } from './webglGuard.js';
 
 const finalFrag = /* glsl */ `
 precision highp float;
@@ -48,9 +49,13 @@ export function initFinalScene({ reducedMotion }) {
     return;
   }
 
-  const renderer = new THREE.WebGLRenderer({
+  const renderer = tryRenderer({
     canvas, antialias: false, alpha: false, powerPreference: 'low-power'
   });
+  if (!renderer) {
+    hideCanvasWithFallback(canvas, 'radial-gradient(circle at center, rgba(0,212,255,0.18), transparent 70%)');
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   const scene = new THREE.Scene();
   const camera = new THREE.Camera();

@@ -41,17 +41,21 @@
 
     <!-- NAV -->
     <nav class="nav">
-      <a href="#" class="nav__logo">VPP<span>•TX</span></a>
-      <ul class="nav__links">
+      <a href="#hero" class="nav__logo">VPP<span>•TX</span></a>
+      <ul class="nav__links" id="navLinks">
         <li><a href="#problem">The Problem</a></li>
         <li><a href="#solution">The Solution</a></li>
+        <li><a href="#how">How It Works</a></li>
         <li><a href="#numbers">The Numbers</a></li>
-        <li><a href="#final">Get Started</a></li>
       </ul>
+      <button type="button" class="nav__cta" data-open-consult>Schedule</button>
       <button id="audioToggle" class="audio-toggle" aria-pressed="false" aria-label="Toggle ambient sound">
         <span class="audio-toggle__bar"></span>
         <span class="audio-toggle__bar"></span>
         <span class="audio-toggle__bar"></span>
+      </button>
+      <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+        <span></span><span></span><span></span>
       </button>
     </nav>
 
@@ -68,10 +72,10 @@
             Texas homeowners are turning their roofs into revenue. Sonnen batteries + solar +
             grid credits. We build it. You earn from it.
           </p>
-          <a href="#final" class="cta cta--hero" data-magnetic>
+          <button type="button" class="cta cta--hero" data-magnetic data-open-consult>
             <span class="cta__label">Schedule My Free Consultation</span>
             <span class="cta__crack"></span>
-          </a>
+          </button>
           <div class="hero__scroll-hint">
             <span>SCROLL</span>
             <span class="hero__scroll-line"></span>
@@ -248,15 +252,52 @@
             Your Power.<br />
             <span class="gradient-text">Your Paycheck.</span>
           </h2>
-          <a href="#" class="cta cta--final" data-magnetic id="finalCta">
+          <button type="button" class="cta cta--final" data-magnetic data-open-consult id="finalCta">
             <span class="cta__ripple"></span>
             <span class="cta__ripple"></span>
             <span class="cta__ripple"></span>
             <span class="cta__label">Schedule My Free Consultation</span>
-          </a>
+          </button>
           <p class="final__fine">No cost to join. No commitment. 15-minute call.</p>
         </div>
       </section>
+
+      <!-- CONSULT MODAL -->
+      <div id="consultModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="consultTitle">
+        <div class="modal__backdrop" data-close></div>
+        <div class="modal__panel" role="document">
+          <button class="modal__close" data-close aria-label="Close">×</button>
+          <div class="modal__step" data-step="form">
+            <p class="eyebrow">FREE 15-MINUTE CONSULT</p>
+            <h3 id="consultTitle" class="modal__title">Let's see if your roof qualifies.</h3>
+            <p class="modal__body">We'll check your address against the VPP coverage map, your roof against the satellite data, and your utility against our credit rates. Then we book a time that works.</p>
+            <form id="consultForm" class="modal__form" novalidate>
+              <label class="field">
+                <span>Name</span>
+                <input type="text" name="name" required autocomplete="name" />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input type="email" name="email" required autocomplete="email" />
+              </label>
+              <label class="field">
+                <span>Texas ZIP</span>
+                <input type="text" name="zip" required inputmode="numeric" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" />
+              </label>
+              <button type="submit" class="cta cta--modal">
+                <span class="cta__label">Get my qualification</span>
+              </button>
+              <p class="modal__fine">No cost. No commitment. We'll text within 1 business day.</p>
+            </form>
+          </div>
+          <div class="modal__step" data-step="success" hidden>
+            <div class="modal__check" aria-hidden="true">✓</div>
+            <h3 class="modal__title">You're in the queue.</h3>
+            <p class="modal__body">Check your inbox — we sent a confirmation. A Texas-licensed advisor will reach out within one business day.</p>
+            <button type="button" class="cta cta--modal" data-close><span class="cta__label">Got it</span></button>
+          </div>
+        </div>
+      </div>
 
       <footer class="footer">
         <div class="footer__inner">

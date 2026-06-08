@@ -1,6 +1,7 @@
 // Animated Voronoi-style background for the stats section. WebGL fragment shader for performance.
 import * as THREE from 'three';
 import { fullscreenVert } from '../shaders/godRays.frag.js';
+import { tryRenderer, hideCanvasWithFallback } from './webglGuard.js';
 
 const voronoiFrag = /* glsl */ `
 precision highp float;
@@ -63,12 +64,16 @@ export function initVoronoi({ reducedMotion }) {
     return;
   }
 
-  const renderer = new THREE.WebGLRenderer({
+  const renderer = tryRenderer({
     canvas,
     antialias: false,
     alpha: true,
     powerPreference: 'low-power'
   });
+  if (!renderer) {
+    hideCanvasWithFallback(canvas, 'radial-gradient(ellipse at center, rgba(0,212,255,0.10), transparent 70%)');
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
   const scene = new THREE.Scene();

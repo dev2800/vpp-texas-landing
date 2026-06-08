@@ -3,9 +3,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export function initCounters() {
   document.querySelectorAll('[data-count]').forEach((el) => {
-    const target = parseFloat(el.dataset.count);
-    const isInt = Number.isInteger(target);
-    const decimals = isInt ? 0 : 2;
+    const raw = el.dataset.count;
+    const target = parseFloat(raw);
+    const decIdx = raw.indexOf('.');
+    const decimals = decIdx >= 0 ? raw.length - decIdx - 1 : 0;
+    const isInt = decimals === 0;
     let started = false;
 
     ScrollTrigger.create({
