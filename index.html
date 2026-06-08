@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#080c18" />
+    <title>VPP Texas — Your Home. Your Power. Your Paycheck.</title>
+    <meta name="description" content="Texas homeowners are joining the Virtual Power Plant powered by Sonnen batteries and solar. Get paid while the grid pays you back." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <!-- LOADER -->
+    <div id="loader" class="loader" aria-hidden="true">
+      <div class="loader__cell">
+        <div class="loader__charge"></div>
+        <div class="loader__terminal loader__terminal--top"></div>
+        <div class="loader__terminal loader__terminal--bottom"></div>
+      </div>
+      <div class="loader__pct"><span id="loaderPct">0</span>%</div>
+      <div class="loader__label">CHARGING THE GRID</div>
+    </div>
+
+    <!-- CUSTOM CURSOR -->
+    <canvas id="cursorCanvas" class="cursor-canvas" aria-hidden="true"></canvas>
+
+    <!-- SCROLL PROGRESS -->
+    <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <a href="#" class="nav__logo">VPP<span>•TX</span></a>
+      <ul class="nav__links">
+        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#solution">The Solution</a></li>
+        <li><a href="#numbers">The Numbers</a></li>
+        <li><a href="#final">Get Started</a></li>
+      </ul>
+      <button id="audioToggle" class="audio-toggle" aria-pressed="false" aria-label="Toggle ambient sound">
+        <span class="audio-toggle__bar"></span>
+        <span class="audio-toggle__bar"></span>
+        <span class="audio-toggle__bar"></span>
+      </button>
+    </nav>
+
+    <main>
+      <!-- HERO -->
+      <section id="hero" class="hero">
+        <canvas id="heroCanvas" class="hero__canvas"></canvas>
+        <div class="hero__content">
+          <h1 class="hero__title">
+            <span class="hero__title-line" data-text="JOIN THE GRID.">JOIN THE GRID.</span>
+            <span class="hero__title-line hero__title-line--accent" data-text="GET PAID.">GET PAID.</span>
+          </h1>
+          <p class="hero__sub">
+            Texas homeowners are turning their roofs into revenue. Sonnen batteries + solar +
+            grid credits. We build it. You earn from it.
+          </p>
+          <a href="#final" class="cta cta--hero" data-magnetic>
+            <span class="cta__label">Schedule My Free Consultation</span>
+            <span class="cta__crack"></span>
+          </a>
+          <div class="hero__scroll-hint">
+            <span>SCROLL</span>
+            <span class="hero__scroll-line"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 1: THE PROBLEM -->
+      <section id="problem" class="section section--problem">
+        <div class="section__inner">
+          <div class="section__copy">
+            <p class="eyebrow">01 · THE PROBLEM</p>
+            <h2 class="section__title">
+              <span class="reveal-word">Your</span>
+              <span class="reveal-word">grid</span>
+              <span class="reveal-word">is</span>
+              <span class="reveal-word">fragile.</span>
+            </h2>
+            <p class="section__body">
+              Winter Storm Uri. Summer demand peaks. Rolling blackouts. ERCOT outages cost Texans
+              over <strong>$130 billion</strong> in a single week. The grid wasn't built for
+              what's coming — and you're the one paying for it.
+            </p>
+            <ul class="stat-list">
+              <li><span class="stat-list__num">4.5M</span> homes lost power in 2021</li>
+              <li><span class="stat-list__num">246</span> deaths attributed to Uri</li>
+              <li><span class="stat-list__num">$5,000</span> average bill spike during peak events</li>
+            </ul>
+          </div>
+          <div class="section__visual">
+            <canvas id="problemCanvas" class="problem-canvas"></canvas>
+            <div class="problem-canvas__label">TEXAS GRID · LIVE OUTAGE SIM</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: THE SOLUTION -->
+      <section id="solution" class="section section--solution">
+        <div class="section__inner section__inner--center">
+          <p class="eyebrow">02 · THE SOLUTION</p>
+          <h2 class="section__title">
+            The Virtual Power Plant.<br />
+            <span class="gradient-text">12,000 homes. One smart grid.</span>
+          </h2>
+          <p class="section__body section__body--center">
+            Your Sonnen battery stores solar by day, exports during peak demand, and earns credits
+            automatically. Every home in the network amplifies the savings.
+          </p>
+
+          <div class="flow">
+            <div class="flow__step" data-stage="sun">
+              <div class="flow__icon flow__icon--sun"></div>
+              <div class="flow__label">SUN</div>
+              <div class="flow__metric"><span data-count="8.4">0</span> kWh harvested</div>
+            </div>
+            <div class="flow__arrow"></div>
+            <div class="flow__step" data-stage="battery">
+              <div class="flow__icon flow__icon--battery"></div>
+              <div class="flow__label">BATTERY</div>
+              <div class="flow__metric"><span data-count="6.2">0</span> kWh stored</div>
+            </div>
+            <div class="flow__arrow"></div>
+            <div class="flow__step" data-stage="home">
+              <div class="flow__icon flow__icon--home"></div>
+              <div class="flow__label">HOME</div>
+              <div class="flow__metric"><span data-count="2.1">0</span> kWh used</div>
+            </div>
+            <div class="flow__arrow"></div>
+            <div class="flow__step" data-stage="grid">
+              <div class="flow__icon flow__icon--grid"></div>
+              <div class="flow__label">GRID</div>
+              <div class="flow__metric"><span data-count="4.1">0</span> kWh exported</div>
+            </div>
+            <div class="flow__arrow"></div>
+            <div class="flow__step" data-stage="credits">
+              <div class="flow__icon flow__icon--cash"></div>
+              <div class="flow__label">CREDITS</div>
+              <div class="flow__metric flow__metric--accent">$<span data-count="0.84">0</span> today</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: SOCIAL PROOF -->
+      <section id="social" class="section section--social">
+        <div class="section__inner section__inner--center">
+          <p class="eyebrow">03 · TEXANS IN THE NETWORK</p>
+          <h2 class="section__title">Real homes. Real checks.</h2>
+        </div>
+        <div id="vortex" class="vortex"></div>
+        <div class="vortex__aurora"></div>
+      </section>
+
+      <!-- SECTION 4: HOW IT WORKS -->
+      <section id="how" class="section section--how">
+        <div class="how__pin">
+          <div class="how__intro">
+            <p class="eyebrow">04 · HOW IT WORKS</p>
+            <h2 class="section__title">Three steps. <span class="gradient-text">Zero hassle.</span></h2>
+          </div>
+          <div class="how__track">
+            <article class="how__step">
+              <div class="how__num">01</div>
+              <div class="how__art" data-lottie="install"></div>
+              <h3>Free in-home consult</h3>
+              <p>We design a solar + Sonnen battery system custom to your home. You approve before anything moves.</p>
+            </article>
+            <article class="how__step">
+              <div class="how__num">02</div>
+              <div class="how__art" data-lottie="power"></div>
+              <h3>We install. We activate.</h3>
+              <p>Licensed Texas installers. 1-3 days on site. Then your battery joins the VPP and starts earning.</p>
+            </article>
+            <article class="how__step">
+              <div class="how__num">03</div>
+              <div class="how__art" data-lottie="cash"></div>
+              <h3>Get paid. Every month.</h3>
+              <p>Credits hit your bill automatically. Average household: <strong>$2,800/yr</strong>. Backup power included.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: THE NUMBERS -->
+      <section id="numbers" class="section section--numbers">
+        <canvas id="voronoiCanvas" class="voronoi-canvas"></canvas>
+        <div class="section__inner section__inner--center numbers__inner">
+          <p class="eyebrow">05 · THE NUMBERS</p>
+          <h2 class="section__title">The grid, by the grid.</h2>
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="stat__num"><span data-count="12000">0</span>+</div>
+              <div class="stat__label">Homes in the network</div>
+            </div>
+            <div class="stat">
+              <div class="stat__num">$<span data-count="2800">0</span></div>
+              <div class="stat__label">Average annual savings</div>
+            </div>
+            <div class="stat">
+              <div class="stat__num"><span data-count="99.4">0</span>%</div>
+              <div class="stat__label">Uptime reliability</div>
+            </div>
+            <div class="stat">
+              <div class="stat__num"><span data-count="0">0</span></div>
+              <div class="stat__label">Blackouts for members</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: BATTERY CLOSEUP -->
+      <section id="battery" class="section section--battery">
+        <div class="battery__pin">
+          <canvas id="batteryCanvas" class="battery__canvas"></canvas>
+          <div class="battery__copy">
+            <p class="eyebrow">06 · INSIDE THE SONNEN</p>
+            <h2 class="section__title">Engineered<br /><span class="gradient-text">in Germany.</span></h2>
+            <p class="section__body">
+              10,000+ cycle lithium iron phosphate cells. 20-year design life. Whisper-silent.
+              Monitored 24/7 from our Austin operations center.
+            </p>
+            <p class="battery__hint">Scroll to explore · Pinch on mobile</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: FINAL CTA -->
+      <section id="final" class="section section--final">
+        <canvas id="finalCanvas" class="final-canvas"></canvas>
+        <div class="final__inner">
+          <p class="eyebrow eyebrow--center">07 · YOUR MOVE</p>
+          <h2 class="final__title">
+            Your Home.<br />
+            Your Power.<br />
+            <span class="gradient-text">Your Paycheck.</span>
+          </h2>
+          <a href="#" class="cta cta--final" data-magnetic id="finalCta">
+            <span class="cta__ripple"></span>
+            <span class="cta__ripple"></span>
+            <span class="cta__ripple"></span>
+            <span class="cta__label">Schedule My Free Consultation</span>
+          </a>
+          <p class="final__fine">No cost to join. No commitment. 15-minute call.</p>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="footer__inner">
+          <div class="footer__brand">VPP·TX</div>
+          <div class="footer__copy">
+            Powered by Sonnen + Solrite Direct · Licensed in TX · © <span id="year"></span>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
